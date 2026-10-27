@@ -17,6 +17,6 @@ chown -R librenms:librenms \
   /tpls \
   /var/lib/nginx \
   /var/log/nginx \
-  /var/log/php83 \
+  /var/log/php84 \
   /var/run/nginx \
   /var/run/php-fpm

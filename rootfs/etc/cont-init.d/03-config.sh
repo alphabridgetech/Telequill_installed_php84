@@ -64,17 +64,17 @@ sed -e "s/@MEMORY_LIMIT@/$MEMORY_LIMIT/g" \
   -e "s/@FPM_PM_START_SERVERS@/$FPM_PM_START_SERVERS/g" \
   -e "s/@FPM_PM_MIN_SPARE_SERVERS@/$FPM_PM_MIN_SPARE_SERVERS/g" \
   -e "s/@FPM_PM_MAX_SPARE_SERVERS@/$FPM_PM_MAX_SPARE_SERVERS/g" \
-  /tpls/etc/php83/php-fpm.d/www.conf >/etc/php83/php-fpm.d/www.conf
+  /tpls/etc/php84/php-fpm.d/www.conf >/etc/php84/php-fpm.d/www.conf
 
 echo "Setting PHP INI configuration..."
-sed -i "s|memory_limit.*|memory_limit = ${MEMORY_LIMIT}|g" /etc/php83/php.ini
-sed -i "s|;date\.timezone.*|date\.timezone = ${TZ}|g" /etc/php83/php.ini
-sed -i "s|;max_input_vars.*|max_input_vars = ${MAX_INPUT_VARS}|g" /etc/php83/php.ini
+sed -i "s|memory_limit.*|memory_limit = ${MEMORY_LIMIT}|g" /etc/php84/php.ini
+sed -i "s|;date\.timezone.*|date\.timezone = ${TZ}|g" /etc/php84/php.ini
+sed -i "s|;max_input_vars.*|max_input_vars = ${MAX_INPUT_VARS}|g" /etc/php84/php.ini
 
 # OpCache
 echo "Setting OpCache configuration..."
 sed -e "s/@OPCACHE_MEM_SIZE@/$OPCACHE_MEM_SIZE/g" \
-  /tpls/etc/php83/conf.d/opcache.ini >/etc/php83/conf.d/opcache.ini
+  /tpls/etc/php84/conf.d/opcache.ini >/etc/php84/conf.d/opcache.ini
 
 # Nginx
 echo "Setting Nginx configuration..."
@@ -105,7 +105,7 @@ if [ -d "${LIBRENMS_PATH}/html/plugins/Weathermap" ]; then
     ln -sf /data/weathermap ${LIBRENMS_PATH}/html/plugins/Weathermap/configs
   fi
   chown -h librenms:librenms ${LIBRENMS_PATH}/html/plugins/Weathermap/configs
-  chown -R librenms:librenms /data/weathermap ${LIBRENMS_PATH}/html/plugins/Weathermap/output
+  find /data/weathermap ${LIBRENMS_PATH}/html/plugins/Weathermap/output \( ! -user librenms -o ! -group librenms \) -exec chown librenms:librenms {} +
 fi
 
 # cleanup bad symlink: https://github.com/librenms/docker/issues/294#issuecomment-1190389960
@@ -219,7 +219,7 @@ done
 # Fix perms
 echo "Fixing perms..."
 chown librenms:librenms /data/config /data/monitoring-plugins /data/plugins /data/rrd /data/weathermap /data/alert-templates
-chown -R librenms:librenms /data/logs ${LIBRENMS_PATH}/composer* ${LIBRENMS_PATH}/config.d ${LIBRENMS_PATH}/bootstrap ${LIBRENMS_PATH}/logs ${LIBRENMS_PATH}/storage ${LIBRENMS_PATH}/vendor
+find /data/logs ${LIBRENMS_PATH}/composer* ${LIBRENMS_PATH}/config.d ${LIBRENMS_PATH}/bootstrap ${LIBRENMS_PATH}/logs ${LIBRENMS_PATH}/storage ${LIBRENMS_PATH}/vendor \( ! -user librenms -o ! -group librenms \) -exec chown librenms:librenms {} +
 chmod ug+rw /data/logs /data/rrd ${LIBRENMS_PATH}/bootstrap/cache ${LIBRENMS_PATH}/storage ${LIBRENMS_PATH}/storage/framework/*
 
 # Check additional Monitoring plugins
